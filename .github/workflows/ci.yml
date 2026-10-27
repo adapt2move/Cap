@@ -244,7 +244,8 @@ jobs:
           - target: aarch64-apple-darwin
             runner: macos-15
           - target: x86_64-pc-windows-msvc
-            runner: windows-2025
+            # Keep the VS 2022 toolchain: cold FFmpeg binding builds fail on windows-2025.
+            runner: windows-2022
     runs-on: ${{ matrix.settings.runner }}
     steps:
       - name: Checkout repository
@@ -350,7 +351,7 @@ jobs:
           - target: x86_64-apple-darwin
             runner: macos-26-intel
           - target: x86_64-pc-windows-msvc
-            runner: windows-2025
+            runner: windows-2022
           - target: x86_64-unknown-linux-gnu
             runner: ubuntu-24.04
     runs-on: ${{ matrix.settings.runner }}
@@ -440,7 +441,7 @@ jobs:
           - name: macOS
             runner: macos-15
           - name: Windows
-            runner: windows-2025
+            runner: windows-2022
           - name: Linux
             runner: ubuntu-24.04
     runs-on: ${{ matrix.settings.runner }}
