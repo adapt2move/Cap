@@ -23,6 +23,11 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Bound macOS compiler memory
+      if: runner.os == 'macOS'
+      shell: bash
+      run: echo 'CARGO_BUILD_JOBS=2' >> "$GITHUB_ENV"
+
     - name: Cache Rust Dependencies
       uses: swatinem/rust-cache@v2
       with:

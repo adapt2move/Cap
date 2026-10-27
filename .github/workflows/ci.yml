@@ -19,7 +19,7 @@ concurrency:
 jobs:
   changes:
     name: Detect Changes
-    runs-on: blacksmith-8vcpu-ubuntu-2404
+    runs-on: ubuntu-24.04
     outputs:
       rust: ${{ steps.filter.outputs.rust }}
       gpui: ${{ steps.filter.outputs.rust == 'true' || steps.filter.outputs.gpui == 'true' || steps.desktop-resources.outputs.desktop-resources == 'true' }}
@@ -92,7 +92,7 @@ jobs:
 
   typecheck:
     name: Typecheck
-    runs-on: blacksmith-8vcpu-ubuntu-2404
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -177,7 +177,7 @@ jobs:
 
   mobile:
     name: Mobile
-    runs-on: blacksmith-8vcpu-ubuntu-2404
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -203,7 +203,7 @@ jobs:
 
   format-biome:
     name: Format (Biome)
-    runs-on: blacksmith-8vcpu-ubuntu-2404
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -220,7 +220,7 @@ jobs:
 
   format-rust:
     name: Format (Cargo)
-    runs-on: blacksmith-8vcpu-ubuntu-2404
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -242,9 +242,9 @@ jobs:
       matrix:
         settings:
           - target: aarch64-apple-darwin
-            runner: blacksmith-6vcpu-macos-15
+            runner: macos-15
           - target: x86_64-pc-windows-msvc
-            runner: blacksmith-8vcpu-windows-2025
+            runner: windows-2025
     runs-on: ${{ matrix.settings.runner }}
     steps:
       - name: Checkout repository
@@ -279,7 +279,7 @@ jobs:
 
   lint-biome:
     name: Lint (Biome)
-    runs-on: blacksmith-8vcpu-ubuntu-2404
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -297,7 +297,7 @@ jobs:
     needs: changes
     if: needs.changes.outputs.rust == 'true'
     timeout-minutes: 60
-    runs-on: blacksmith-8vcpu-ubuntu-2404
+    runs-on: ubuntu-24.04
     env:
       RUST_TARGET_TRIPLE: x86_64-unknown-linux-gnu
       LD_LIBRARY_PATH: ${{ github.workspace }}/target/native-deps/lib:${{ github.workspace }}/target/debug
@@ -346,14 +346,13 @@ jobs:
       matrix:
         settings:
           - target: aarch64-apple-darwin
-            runner: blacksmith-6vcpu-macos-15
-          # Cap still ships an Intel build, and Blacksmith has no Intel Macs.
+            runner: macos-15
           - target: x86_64-apple-darwin
             runner: macos-26-intel
           - target: x86_64-pc-windows-msvc
-            runner: blacksmith-8vcpu-windows-2025
+            runner: windows-2025
           - target: x86_64-unknown-linux-gnu
-            runner: blacksmith-8vcpu-ubuntu-2404
+            runner: ubuntu-24.04
     runs-on: ${{ matrix.settings.runner }}
     env:
       # Full debuginfo for the opt-level 2 dependency tree is most of the
@@ -439,11 +438,11 @@ jobs:
       matrix:
         settings:
           - name: macOS
-            runner: blacksmith-6vcpu-macos-15
+            runner: macos-15
           - name: Windows
-            runner: blacksmith-8vcpu-windows-2025
+            runner: windows-2025
           - name: Linux
-            runner: blacksmith-8vcpu-ubuntu-2404
+            runner: ubuntu-24.04
     runs-on: ${{ matrix.settings.runner }}
     env:
       CARGO_PROFILE_DEV_DEBUG: "0"
@@ -489,7 +488,7 @@ jobs:
 
   tauri-plugins:
     name: Verify Tauri plugin versions
-    runs-on: blacksmith-8vcpu-ubuntu-2404
+    runs-on: ubuntu-24.04
     needs: changes
     if: needs.changes.outputs.tauri-plugins == 'true'
     steps:

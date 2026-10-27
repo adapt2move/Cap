@@ -1,5 +1,5 @@
 {
-	"_doc": "Engine verification suites. Read by scripts/verify/plan.py (CI planning, change detection) and scripts/verify/run.sh (local and CI runs). Fields: cargo = the cargo target selection that builds the suite; test = optional exact test name inside that binary; platforms = where each tier runs it (platform-independent logic runs on linux only); roots = workspace packages whose dependency closure decides whether a change can affect the suite; own = files that only affect this suite (a change confined to them selects just this suite). skip = case-id globs left out of a tier on a platform (CAP_VERIFY_SKIP), to keep the FAST tier within its time budget; the FULL tier runs them. Exception: CI Windows VMs (Blacksmith windows-2025, formerly hosted windows-2022) have no D3D11 video device, so every Windows case decodes with FFmpeg (the code Linux runs) and renders on the WARP software rasterizer; on hosted windows-2022 the 120 s jitter-camera export and playback and the 3000-seek storms took 6 to more than 15 minutes each (killed at the 15 minute per-test limit in 4 of 5 full runs), so FULL leaves them to Linux and macOS. cases = the executed-case floor per tier and platform: the gate fails when fewer distinct cases whose id starts with prefix ran across all shards (scripts/verify/floor.py). unsupported = per-platform case globs that may report unsupported (with the reason); CI sets CAP_VERIFY_REQUIRE_SUPPORTED=1, so any other unsupported case fails.",
+	"_doc": "Engine verification suites. Read by scripts/verify/plan.py (CI planning, change detection) and scripts/verify/run.sh (local and CI runs). Fields: cargo = the cargo target selection that builds the suite; test = optional exact test name inside that binary; platforms = where each tier runs it (platform-independent logic runs on linux only); roots = workspace packages whose dependency closure decides whether a change can affect the suite; own = files that only affect this suite (a change confined to them selects just this suite). skip = case-id globs left out of a tier on a platform (CAP_VERIFY_SKIP), to keep the FAST tier within its time budget; the FULL tier runs them. Exception: CI Windows VMs have no D3D11 video device, so every Windows case decodes with FFmpeg (the code Linux runs) and renders on the WARP software rasterizer; on hosted windows-2022 the 120 s jitter-camera export and playback and the 3000-seek storms took 6 to more than 15 minutes each (killed at the 15 minute per-test limit in 4 of 5 full runs), so FULL leaves them to Linux and macOS. cases = the executed-case floor per tier and platform: the gate fails when fewer distinct cases whose id starts with prefix ran across all shards (scripts/verify/floor.py). unsupported = per-platform case globs that may report unsupported (with the reason); CI sets CAP_VERIFY_REQUIRE_SUPPORTED=1, so any other unsupported case fails.",
 	"suites": [
 		{
 			"name": "verify-self",
@@ -327,7 +327,7 @@
 	],
 	"runners": {
 		"linux": {
-			"runner": "blacksmith-8vcpu-ubuntu-2404",
+			"runner": "ubuntu-24.04",
 			"target": "x86_64-unknown-linux-gnu",
 			"shards": {
 				"fast": 2,
@@ -336,7 +336,7 @@
 			"archive": false
 		},
 		"macos": {
-			"runner": "blacksmith-6vcpu-macos-15",
+			"runner": "macos-15",
 			"target": "aarch64-apple-darwin",
 			"shards": {
 				"fast": 1,
@@ -345,7 +345,7 @@
 			"archive": false
 		},
 		"windows": {
-			"runner": "blacksmith-8vcpu-windows-2025",
+			"runner": "windows-2025",
 			"target": "x86_64-pc-windows-msvc",
 			"shards": {
 				"fast": 3,
@@ -368,7 +368,7 @@
 	},
 	"extra_runners": {
 		"macos-vt": {
-			"_doc": "macOS MP4 exports on the VideoToolbox hardware H.264 encoder. Blacksmith macOS VMs have none: Cap opens h264_videotoolbox with allow_sw=0 for exports, which fails there (\"Try -allow_sw 1\", probe run 38853844860), so Cap falls back to libx264, a path real Macs only take when the hardware encoder is busy or over capacity. The suites that encode (export, audio) run again on hosted macOS when a change reaches encoding (encoders, export, the renderer's output and RGBA to NV12 conversion, media and frame conversion) or the suite itself, and in every full run (nightly, dispatch).",
+			"_doc": "macOS MP4 exports on the VideoToolbox hardware H.264 encoder. The main macOS shards force software export encoding; this shard leaves hardware encoding enabled. Export and audio run here when encoding or suite code changes, and in every full run.",
 			"os": "macos",
 			"runner": "macos-15",
 			"target": "aarch64-apple-darwin",

@@ -38,8 +38,7 @@ def load_guards():
         return tomllib.load(f)
 
 
-# Engine crates: a pull request that changes any of them runs the FULL tier
-# (with Blacksmith runners there is no queue to save).
+# Engine crates: a pull request that changes any of them runs the FULL tier.
 ENGINE_CRATES = [
     "crates/rendering/**",
     "crates/editor/**",
@@ -280,10 +279,9 @@ def affected(config, files, metadata, tier):
 
 def extra_runners(config, names, tier, files):
     """Additional platform entries (suites.json `extra_runners`): the same
-    platform's suites on another machine class, for a path the main runner
-    cannot cover (macOS export on the VideoToolbox hardware encoder, which
-    Blacksmith VMs lack). Included for every changed path that matches the
-    entry's `paths`, and always when `files` is None (a full run)."""
+    platform's suites with another configuration (macOS VideoToolbox export
+    alongside the main shards' forced software encoder). Included for paths
+    matching the entry's `paths`, and when `files` is None (a full run)."""
     out = []
     for name, entry in config.get("extra_runners", {}).items():
         suites = [

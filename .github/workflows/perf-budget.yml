@@ -1,8 +1,7 @@
 name: Perf budget
 
 # Head and base are built and timed on one machine, interleaved, because
-# Blacksmith VMs have no hardware instruction counters and machine state
-# drifts between jobs. "Perf budget" is the job to require.
+# machine state drifts between jobs. "Perf budget" is the job to require.
 
 on:
   pull_request:
@@ -22,7 +21,7 @@ permissions:
 
 jobs:
   scope:
-    runs-on: blacksmith-2vcpu-ubuntu-2404
+    runs-on: ubuntu-24.04
     outputs:
       run: ${{ steps.scope.outputs.run }}
     steps:
@@ -68,7 +67,7 @@ jobs:
   measure:
     needs: scope
     if: needs.scope.outputs.run == 'true'
-    runs-on: blacksmith-6vcpu-macos-26
+    runs-on: macos-26
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
@@ -136,7 +135,7 @@ jobs:
     name: Perf budget
     needs: [scope, measure]
     if: always()
-    runs-on: blacksmith-2vcpu-ubuntu-2404
+    runs-on: ubuntu-24.04
     steps:
       - env:
           RUN: ${{ needs.scope.outputs.run }}

@@ -201,10 +201,10 @@ jobs:
       matrix:
         settings:
           - target: x86_64-apple-darwin
-            runner: macos-latest-xlarge
+            runner: macos-26-intel
             arch: x86_64
           - target: aarch64-apple-darwin
-            runner: macos-latest-xlarge
+            runner: macos-26
             arch: aarch64
           - target: x86_64-pc-windows-msvc
             runner: windows-2022
@@ -344,7 +344,6 @@ jobs:
       # the headroom is cheap, so keep it. The runner already ships an active
       # /swapfile (resizing it fails with "Text file busy"), so add a large
       # swapfile on the roomy /mnt disk on top of the existing swap.
-      # macOS runs on xlarge runners and is unaffected.
       - name: Increase swap space (Linux)
         if: ${{ runner.os == 'Linux' }}
         shell: bash

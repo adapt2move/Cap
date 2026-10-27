@@ -26,6 +26,11 @@ outputs:
 runs:
   using: composite
   steps:
+    - name: Bound macOS compiler memory
+      if: runner.os == 'macOS'
+      shell: bash
+      run: echo 'CARGO_BUILD_JOBS=2' >> "$GITHUB_ENV"
+
     # Only what the suite's dependency closure links against (no webkit/gtk),
     # plus lavapipe for software Vulkan rendering.
     - name: Linux packages

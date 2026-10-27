@@ -3,8 +3,8 @@ name: Verify crash safety
 # The `crash` engine-verify suite (crates/verify/tests/crash.rs) on all three
 # platforms: in-process vs out-of-process muxer equality and recorder, muxer
 # and finalize kills against what is physically on disk. engine-verify.yml
-# runs it like every other suite; this workflow runs it alone on Blacksmith
-# runners for crash-safety proof branches.
+# runs it like every other suite; this workflow runs it alone for
+# crash-safety proof branches.
 
 on:
   push:
@@ -30,13 +30,13 @@ jobs:
       matrix:
         include:
           - platform: macos
-            runner: blacksmith-6vcpu-macos-15
+            runner: macos-15
             target: aarch64-apple-darwin
           - platform: linux
-            runner: blacksmith-8vcpu-ubuntu-2404
+            runner: ubuntu-24.04
             target: x86_64-unknown-linux-gnu
           - platform: windows
-            runner: blacksmith-8vcpu-windows-2025
+            runner: windows-2025
             target: x86_64-pc-windows-msvc
     uses: ./.github/workflows/engine-verify-os.yml
     with:

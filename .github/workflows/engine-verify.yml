@@ -68,7 +68,7 @@ concurrency:
 jobs:
   plan:
     name: Plan
-    runs-on: blacksmith-8vcpu-ubuntu-2404
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:
       run: ${{ steps.plan.outputs.run }}
@@ -192,9 +192,7 @@ jobs:
           MAX: ${{ steps.files.outputs.max }}
           SUITES: ${{ inputs.suites }}
           RUSTUP_TOOLCHAIN: stable
-          # Runner labels live in scripts/verify/suites.json (macOS:
-          # Blacksmith). A repository variable overrides one without a code
-          # change, e.g. ENGINE_VERIFY_MACOS_RUNNER=macos-15 for GitHub-hosted.
+          # Repository variables override the defaults in scripts/verify/suites.json.
           ENGINE_VERIFY_MACOS_RUNNER: ${{ vars.ENGINE_VERIFY_MACOS_RUNNER }}
           ENGINE_VERIFY_LINUX_RUNNER: ${{ vars.ENGINE_VERIFY_LINUX_RUNNER }}
           ENGINE_VERIFY_WINDOWS_RUNNER: ${{ vars.ENGINE_VERIFY_WINDOWS_RUNNER }}
@@ -219,7 +217,7 @@ jobs:
     name: Deep review label
     needs: plan
     if: github.event_name == 'pull_request' && needs.plan.outputs.escalate == 'true'
-    runs-on: blacksmith-8vcpu-ubuntu-2404
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions:
       pull-requests: write
@@ -257,7 +255,7 @@ jobs:
     name: Engine verify
     needs: [plan, verify]
     if: always()
-    runs-on: blacksmith-8vcpu-ubuntu-2404
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
