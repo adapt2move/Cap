@@ -309,6 +309,8 @@ def extra_runners(config, names, tier, files):
 def matrix(config, names, tier, files=None):
     include = []
     for platform in PLATFORMS:
+        if not config["runners"][platform].get("enabled", True):
+            continue
         suites = [s["name"] for s in config["suites"] if s["name"] in names and platform in s["platforms"][tier]]
         if not suites:
             continue
@@ -530,6 +532,11 @@ def cmd_test(_args):
         ok = got == expected
         failed += not ok
         print(f"{'ok ' if ok else 'BAD'} macos-vt {files} -> {got}")
+    for tier in ("fast", "full"):
+        entries = matrix(config, names, tier)["include"]
+        ok = not any(e["os"] == "windows" for e in entries) and {"linux", "macos"} <= {e["os"] for e in entries}
+        failed += not ok
+        print(f"{'ok ' if ok else 'BAD'} {tier} CI excludes paused Windows and retains Linux/macOS")
     rendering_only = affected(config, ["crates/rendering/src/decoder/model/mod.rs"], metadata, "fast")[0]
     if "decoder-model-ffmpeg" not in rendering_only:
         failed += 1

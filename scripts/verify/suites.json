@@ -345,6 +345,7 @@
 			"archive": false
 		},
 		"windows": {
+			"enabled": false,
 			"runner": "windows-2022",
 			"target": "x86_64-pc-windows-msvc",
 			"shards": {

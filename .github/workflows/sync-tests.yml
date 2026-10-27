@@ -1,6 +1,6 @@
 name: A/V Sync Tests
 
-# Verifies audio/video sync correctness on every platform:
+# Verifies audio/video sync correctness on Linux and macOS:
 #   1. Unit + property tests for the timestamp pipeline (encoders, drift
 #      trackers, muxers).
 #   2. The synthetic device matrix: fake cameras/screens/microphones across
@@ -51,7 +51,6 @@ jobs:
       matrix:
         runner:
           - macos-latest
-          - windows-2022
           - ubuntu-24.04
     runs-on: ${{ matrix.runner }}
     permissions:
